@@ -6,6 +6,7 @@ import json
 import bcrypt
 
 from youtube_transcript_api import YouTubeTranscriptApi
+from youtube_transcript_api.proxies import WebshareProxyConfig
 from summa import summarizer
 
 from fastapi import FastAPI,HTTPException, Depends
@@ -114,9 +115,19 @@ def get_youtube_search_results(query):
         
     return movie_results
 
+
+#use function to fetch video from youtube and transcript into english
 def get_video_transcription(video_id,language="en"):
-    #use function to fetch video from youtube and transcript into english
-    ytt_api = YouTubeTranscriptApi()
+
+    # Initialize the YouTubeTranscriptApi with a proxy configuration
+    ytt_api = YouTubeTranscriptApi(
+        proxy_config=WebshareProxyConfig(
+            proxy_username="kcwgbwrt",
+            proxy_password="u869eqrgrvi4",
+        )
+    )
+
+    # all requests done by ytt_api will now be proxied through Webshare
     try:
         resource=ytt_api.list(video_id)
         full_text=""

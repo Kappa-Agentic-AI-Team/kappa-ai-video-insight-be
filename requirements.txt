@@ -1,0 +1,14 @@
+fastapi
+pydantic
+sqlalchemy
+langchain
+serpapi
+dotenv
+bcrypt
+groq
+uvicorn
+python-multipart
+tiktoken
+youtube_transcript_api
+summa
+re

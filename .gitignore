@@ -1,2 +1,15 @@
+# .gitignore
+__pycache__/
+*.pyc
 .env
-/venv
+.vscode/
+.idea/
+.venv/
+venv/
+searchHistory.db
+# Elastic Beanstalk Files
+.elasticbeanstalk/*
+!.elasticbeanstalk/*.cfg.yml
+!.elasticbeanstalk/*.global.yml
+.ebextensions/*
+01_fastapi.config

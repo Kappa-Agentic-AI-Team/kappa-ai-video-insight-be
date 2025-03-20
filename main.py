@@ -1,5 +1,6 @@
 import os, requests
-from serpapi import GoogleSearch
+#from serpapi import GoogleSearch
+import serpapi
 import re
 import json
 import bcrypt
@@ -82,14 +83,20 @@ def chunk_text(text: str, max_tokens: int) -> list:
 def get_youtube_search_results(query):
     #function to search youtube engine for videos according to user query
     #return five best match
-    params = {
-    "engine": "youtube",
-    "search_query": query,
-    "api_key":SERPAPI_API_KEY
+    # params = {
+    # "engine": "youtube",
+    # "search_query": query,
+    # "api_key":SERPAPI_API_KEY
     
-    }
-    search = GoogleSearch(params)
-    results = search.get_dict()
+    # }
+    #search = GoogleSearch(params)
+
+    client = serpapi.Client(api_key=os.getenv("SERPAPI_API_KEY"))
+    results = client.search({
+        'engine': 'youtube',
+        'search_query': query,
+    })
+    #results = search.get_dict()
     _result = results["video_results"][:5]
     movie_results = []
 

@@ -7,7 +7,7 @@ from sqlalchemy.exc import SQLAlchemyError
 
 #Database setup
 #DATABASE_URL=URL.create("sqlite",host="localhost",database="chat_history.db")
-DATABASE_URL="sqlite:///C:/Users/oluwasegun.ukana/Developmentenv/video reviewer/searchHistory.db"
+DATABASE_URL="sqlite:///searchHistory.db"
 engine = create_engine(DATABASE_URL,connect_args={"check_same_thread": False})
 SessionLocal=sessionmaker(bind=engine, autoflush=False,autocommit=False)
 

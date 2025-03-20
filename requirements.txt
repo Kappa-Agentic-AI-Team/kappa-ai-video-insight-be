@@ -10,5 +10,4 @@ uvicorn
 python-multipart
 tiktoken
 youtube_transcript_api
-summa
-re
+summa==1.2.0

@@ -404,10 +404,9 @@ def register_user(request:CreateUser):
     db.close()
 
     token_payload = {
-        "username": user.username,
-        "name": user.name,
-        "user_id": user.id
-        
+        "username": new_user.username,
+        "name": new_user.name,
+        "user_id": new_user.id
     }
     
     return {"message": "User registered successfully", "response": token_payload}

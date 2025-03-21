@@ -193,6 +193,17 @@ tools = [
     
 ]
 
+def format_content(text: str):
+    response = client.chat.completions.create(
+        model="llama-3.3-70b-versatile",
+        temperature=0,
+        messages=[
+            {"role": "system", "content": "You will re-format the user query provided into html format for easy reading. Only return the formatted result without any extra comment"},
+            {"role": "user", "content": f"{text}"}
+        ]
+    )
+    return response.choices[0].message.content
+
 @app.post("/search-and-summarize")
 def get_summarized_video_transcript(request:Search):
     #get system message formated with user query
@@ -283,8 +294,27 @@ def get_summarized_video_transcript(request:Search):
         messages=messages
     )
     response = second_response
+    response_text = response.choices[0].message.content
+    response_text_formatted = format_content(response_text)
+    return {"response": response_text, "formatted_response": response_text_formatted}
 
-    return f"Final Response: {response.choices[0].message.content}\n\n"
+@app.post("/translate")
+def translate(request:TranslateSearch):
+    query=request.text
+    language=request.languageCode
+    response = client.chat.completions.create(
+        model="llama-3.3-70b-versatile",
+        temperature=0,
+        messages=[
+            {"role": "system", "content": "You are a helpful translator who receives the language code and translates into the required language."},
+            {"role": "system", "content": "You will only return the translated response without any other remark."},
+            {"role": "user", "content": f"Translate this text into {language} code: Text:{query}"},
+        ]
+    )
+    response_text = response.choices[0].message.content
+    response_text_formatted = format_content(response_text)
+    return {"response": response_text, "formatted_response": response_text_formatted}
+
 
 #function that store user search query and summary recieved
 def store_search_query_summary(
@@ -327,12 +357,11 @@ def retrieve_search_query_summary(user_id: int):
 
         # Return empty response if no messages found
         if not getQuery:
-            return {"response": ""}
+            return {"response": []}
 
         # Format and return history
         return {
-            "response":[{"Query":x.query, "Summary":x.summary} for x in getQuery]
-            
+            "response":[{"Query":x.query, "Summary":x.summary, "FormattedSummary": format_content(x.summary)} for x in getQuery]
         }
     
     finally:
@@ -393,8 +422,8 @@ def get_user_summarized_video_transcript(request:SearchText):
             "content": """Automatically find the best and latest match video via YouTube search.
                 Extract text transcription from the video clip using the `video_id`, and give a detail summary of the transcription. In the summarization, provide:
                 
-                - A **brief but detailed summary**
-                - **Key themes or points** from the video
+                - A brief but detailed summary**
+                - Key themes or points** from the video
                 - The **link to the actual YouTube video**.
                 
                 Search for user input inside the three backticks and fetch the transcription using the function call."""
@@ -467,7 +496,7 @@ def get_user_summarized_video_transcript(request:SearchText):
         messages=messages
     )
     response = second_response
-    store_search_query_summary(user_id=_user['user_id'], query=query,
-                                 summary=response.choices[0].message.content)
-    #return final response
-    return f"Final Response: {response.choices[0].message.content}\n\n"
+    response_text = response.choices[0].message.content
+    response_text_formatted = format_content(response_text)
+    store_search_query_summary(user_id=_user['user_id'], query=query, summary=response_text)
+    return {"response": response_text, "formatted_response": response_text_formatted}

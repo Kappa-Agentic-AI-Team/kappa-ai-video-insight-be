@@ -56,3 +56,7 @@ class SearchText(BaseModel):
     
 class Search(BaseModel):
     text:str 
+
+class TranslateSearch(BaseModel):
+    text:str 
+    languageCode:str

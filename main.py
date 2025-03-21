@@ -385,7 +385,7 @@ def login_user(form_data:OAuth2PasswordRequestForm =Depends()):
     }
     #jwt can be use to manage data validity here
     
-    return {"response": token_payload}
+    return {"message": "Logged in successfully", "response": token_payload}
 
 #Function to create new user
 @app.post("/register")
@@ -402,8 +402,15 @@ def register_user(request:CreateUser):
     db.commit()
     db.refresh(new_user)
     db.close()
+
+    token_payload = {
+        "username": user.username,
+        "name": user.name,
+        "user_id": user.id
+        
+    }
     
-    return {"message": "User registered successfully"}
+    return {"message": "User registered successfully", "response": token_payload}
 
 @app.post("/user-search")
 def get_user_summarized_video_transcript(request:SearchText):

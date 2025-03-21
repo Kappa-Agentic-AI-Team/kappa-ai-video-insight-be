@@ -139,7 +139,7 @@ def get_video_transcription(video_id,language="en"):
             else:
                 original=transcript.fetch()
                 full_text ="\n".join([snippet.text for snippet in original.snippets])
-        def summarize_text(text, ratio=0.2):
+        def summarize_text(text, ratio=0.4):
             """
             Summarizes the transcript using TextRank before sending it to the LLM.
             """
